@@ -54,19 +54,15 @@ class App extends Component {
 		this.clearTimeouts();
 		let timeouts = [];
 
-		let i = 0;
-
-		while (i < steps.length - this.state.currentStep) {
+		for (let i = this.state.currentStep; i < steps.length; i++) {
 			let timeout = setTimeout(() => {
-				let currentStep = this.state.currentStep;
-				this.setState({
-					array: steps[currentStep],
-					colorKey: colorSteps[currentStep],
-					currentStep: currentStep + 1,
-				});
-				timeouts.push(timeout);
-			}, this.state.delay * i);
-			i++;
+			this.setState({
+				array: steps[i],
+				colorKey: colorSteps[i],
+				currentStep: i + 1,
+			});
+			}, this.state.delay * (i - this.state.currentStep));
+			timeouts.push(timeout);
 		}
 
 		this.setState({
@@ -191,27 +187,19 @@ class App extends Component {
 		);
 	};
 
-	changeSpeed = (e) => {
-		this.clearTimeouts();
-		this.setState({
-			delay: parseInt(e.target.value),
-		});
-	};
-
 	render() {
 		let playButton;
-		let barsDiv 
-		if(this.state.array!==null){
-			barsDiv = this.state.array.map((value, index) => (
-				<Bar
-					key={index}
-					index={index}
-					length={value}
-					color={this.state.colorKey[index]}
-					changeArray={this.changeArray}
-				/>
-			));
-		}
+		let barsDiv;
+
+		barsDiv = this.state.array.map((value, index) => (
+		<Bar
+			key={index}
+			index={index}
+			length={value}
+			color={this.state.colorKey[index]}
+			changeArray={this.changeArray}
+		/>
+		));
 
 		if (this.state.arraySteps.length === this.state.currentStep) {
 			playButton = (
